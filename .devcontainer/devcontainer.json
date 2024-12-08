@@ -10,9 +10,11 @@
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
 				"ms-azuretools.vscode-docker",
-				"rust-lang.rust-analyzer"
+				"rust-lang.rust-analyzer",
+				"tamasfe.even-better-toml"
 			],
 			"settings": {
+				"files.autoSave": "afterDelay",
 				"terminal.integrated.defaultProfile.linux": "zsh",
 				"terminal.integrated.profiles.linux": {
 					"zsh": {
