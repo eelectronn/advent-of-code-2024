@@ -3,6 +3,7 @@ use std::io::{Write, Read};
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, COOKIE};
 
+#[allow(dead_code)]
 pub fn get_input(day: &str) {
     let url = format!("https://adventofcode.com/2024/day/{}/input", day);
     let file_path = format!("/var/data/input_{}.txt", day);
