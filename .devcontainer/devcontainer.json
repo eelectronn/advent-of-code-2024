@@ -11,7 +11,8 @@
 				"GitHub.copilot-chat",
 				"ms-azuretools.vscode-docker",
 				"rust-lang.rust-analyzer",
-				"tamasfe.even-better-toml"
+				"tamasfe.even-better-toml",
+				"vadimcn.vscode-lldb"
 			],
 			"settings": {
 				"files.autoSave": "afterDelay",
