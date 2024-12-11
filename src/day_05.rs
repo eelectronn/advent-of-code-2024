@@ -41,3 +41,20 @@ pub fn solve_part_1(input: &(Vec<(i32, i32)>, Vec<Vec<i32>>)) -> i32 {
     }
     answer
 }
+
+pub fn solve_part_2(input: &(Vec<(i32, i32)>, Vec<Vec<i32>>)) -> i32 {
+    let neighbour_pair_set: HashSet<(i32, i32)> = input.0.iter().cloned().collect();
+    let mut answer = 0;
+    for path in &input.1 {
+        let mut path = path.clone();
+        path.sort_by(|a, b| {
+            if neighbour_pair_set.contains(&(a.clone(), b.clone())) {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Greater
+            }
+        });
+        answer += path[path.len()/2];
+    }
+    answer - solve_part_1(input)
+}
