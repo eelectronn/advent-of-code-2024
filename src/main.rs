@@ -35,7 +35,7 @@ fn main() {
     // println!("Answer part 1: {}", day_05::solve_part_1(&parsed_input));
     // println!("Answer part 2: {}", day_05::solve_part_2(&parsed_input));
 
-    let input = input::read_input("6");
+    let input = input::read_input("6_sample");
     let parsed_input = day_06::parse_input(&input);
     println!("Answer part 1: {}", day_06::solve_part_1(&parsed_input));
 }

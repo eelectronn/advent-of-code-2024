@@ -33,22 +33,27 @@ pub fn solve_part_1(input: &Vec<Vec<char>>) -> usize {
                 '<' => '^',
                 _ => ' ',
             };
+            print_and_wait(&grid);
             continue;
         }
         grid[new_y][new_x] = grid[y][x];
-        grid[y][x] = '.';
+        // grid[y][x] = '.';
         y = new_y;
         x = new_x;
         visited.insert((y, x));
-        // for row in &grid {
-            // println!("{}", row.iter().collect::<String>());
-        // }
-        // println!();
-        // Wait for user input
-        // let mut input = String::new();
-        // std::io::stdin().read_line(&mut input).unwrap();
+        print_and_wait(&grid);
     }
     visited.len()
+}
+
+fn print_and_wait(grid: &Vec<Vec<char>>) {
+    for row in grid {
+        println!("{}", row.iter().collect::<String>());
+    }
+    println!();
+    // Wait for user input
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
 }
 
 fn find_guard(grid: &Vec<Vec<char>>) -> (usize, usize) {
