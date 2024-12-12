@@ -60,11 +60,23 @@ pub fn solve_part_1(input: &Vec<Vec<char>>) -> usize {
 
 pub fn solve_part_2(input: &Vec<Vec<char>>) -> usize {
     let mut count = 0;
-    for y in 0..input.len()-2 {
-        for x in 0..input[y].len()-2 {
-            let major_diagonal = format!("{}{}{}", input[y][x], input[y+1][x+1], input[y+2][x+2]);
-            let minor_diagonal = format!("{}{}{}", input[y][x+2], input[y+1][x+1], input[y+2][x]);
-            if (major_diagonal == "MAS" || major_diagonal == "SAM") && (minor_diagonal == "MAS" || minor_diagonal == "SAM") {
+    for y in 0..input.len() - 2 {
+        for x in 0..input[y].len() - 2 {
+            let major_diagonal = format!(
+                "{}{}{}",
+                input[y][x],
+                input[y + 1][x + 1],
+                input[y + 2][x + 2]
+            );
+            let minor_diagonal = format!(
+                "{}{}{}",
+                input[y][x + 2],
+                input[y + 1][x + 1],
+                input[y + 2][x]
+            );
+            if (major_diagonal == "MAS" || major_diagonal == "SAM")
+                && (minor_diagonal == "MAS" || minor_diagonal == "SAM")
+            {
                 count += 1;
             }
         }

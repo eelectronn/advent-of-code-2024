@@ -7,9 +7,9 @@ pub fn parse_input(input: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
             .filter(|line| line.contains("|"))
             .map(|line| {
                 let parts = line
-                .split("|")
-                .map(|part| part.parse().expect("Item should be parsable to i32"))
-                .collect::<Vec<i32>>();
+                    .split("|")
+                    .map(|part| part.parse().expect("Item should be parsable to i32"))
+                    .collect::<Vec<i32>>();
                 (parts[0], parts[1])
             })
             .collect::<Vec<(i32, i32)>>(),
@@ -17,17 +17,15 @@ pub fn parse_input(input: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
             .lines()
             .filter(|line| line.contains(","))
             .map(|line| {
-                line
-                .split(",")
-                .map(|part| part.parse().expect("Item should be parsable to i32"))
-                .collect::<Vec<i32>>()
+                line.split(",")
+                    .map(|part| part.parse().expect("Item should be parsable to i32"))
+                    .collect::<Vec<i32>>()
             })
-            .collect::<Vec<Vec<i32>>>()
+            .collect::<Vec<Vec<i32>>>(),
     )
 }
 
 pub fn solve_part_1(input: &(Vec<(i32, i32)>, Vec<Vec<i32>>)) -> i32 {
-
     let neighbour_pair_set: HashSet<(i32, i32)> = input.0.iter().cloned().collect();
 
     let mut answer = 0;
@@ -37,7 +35,7 @@ pub fn solve_part_1(input: &(Vec<(i32, i32)>, Vec<Vec<i32>>)) -> i32 {
                 continue 'paths;
             }
         }
-        answer += path[path.len()/2];
+        answer += path[path.len() / 2];
     }
     answer
 }
@@ -54,7 +52,7 @@ pub fn solve_part_2(input: &(Vec<(i32, i32)>, Vec<Vec<i32>>)) -> i32 {
                 std::cmp::Ordering::Greater
             }
         });
-        answer += path[path.len()/2];
+        answer += path[path.len() / 2];
     }
     answer - solve_part_1(input)
 }

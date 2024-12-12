@@ -1,7 +1,7 @@
 use regex::Regex;
 
 pub fn parse_input(input: &str) -> &str {
-    return input
+    return input;
 }
 
 pub fn solve_part_1(input: &str) -> i64 {
@@ -11,7 +11,7 @@ pub fn solve_part_1(input: &str) -> i64 {
     for cap in rg.captures_iter(input) {
         if let Some(matched) = cap.get(0) {
             let matched = matched.as_str();
-            let nums = matched[4..matched.len()-1]
+            let nums = matched[4..matched.len() - 1]
                 .split(",")
                 .map(|x| x.parse::<i64>().expect("Item should parse to i64"))
                 .collect::<Vec<i64>>();
@@ -37,7 +37,7 @@ pub fn solve_part_2(input: &str) -> i64 {
         let matched = matches[i];
         let start = matched.start();
         let end = if i + 1 < matches.len() {
-            matches[i+1].start()
+            matches[i + 1].start()
         } else {
             input.len()
         };

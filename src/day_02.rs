@@ -2,14 +2,11 @@ pub fn parse_input(input: &str) -> Vec<Vec<i32>> {
     input
         .lines()
         .filter(|line| !line.is_empty())
-        .map(
-            |line| {
-                line
-                    .split_whitespace()
-                    .map(|item| item.parse().expect("Item should parse to i32"))
-                    .collect()
-            }
-        )
+        .map(|line| {
+            line.split_whitespace()
+                .map(|item| item.parse().expect("Item should parse to i32"))
+                .collect()
+        })
         .collect()
 }
 
@@ -32,7 +29,7 @@ fn is_safe(diff: &Vec<i32>) -> bool {
     for d in diff {
         // Opposite sign in diff means the the sequence is not always increasing/decreasing.
         // Product of two numbers with the opposite sign is always negative.
-        if d*first_diff <= 0 || *d == 0 || d.abs() > 3 {
+        if d * first_diff <= 0 || *d == 0 || d.abs() > 3 {
             return false;
         }
     }
@@ -42,7 +39,7 @@ fn is_safe(diff: &Vec<i32>) -> bool {
 fn get_diff(report: &Vec<i32>) -> Vec<i32> {
     let mut diff = Vec::new();
     for i in 1..report.len() {
-        diff.push(report[i] - report[i-1]);
+        diff.push(report[i] - report[i - 1]);
     }
     diff
 }
@@ -86,7 +83,7 @@ fn is_safe_with_one_skip(diff_ref: &Vec<i32>) -> bool {
     let mut i = 0;
     let mut skipped_once = false;
     while i < diff.len() {
-        if 1<=diff[i] && diff[i] <= 3 {
+        if 1 <= diff[i] && diff[i] <= 3 {
             i += 1;
         } else {
             if skipped_once {
@@ -94,8 +91,8 @@ fn is_safe_with_one_skip(diff_ref: &Vec<i32>) -> bool {
             } else {
                 skipped_once = true;
                 if i + 1 < diff.len() {
-                    let combined_diff = diff[i] + diff[i+1];
-                    if 1<=combined_diff && combined_diff <= 3 {
+                    let combined_diff = diff[i] + diff[i + 1];
+                    if 1 <= combined_diff && combined_diff <= 3 {
                         i += 2;
                     } else {
                         return false;
