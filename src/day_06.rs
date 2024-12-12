@@ -1,9 +1,3 @@
-use std::{
-    arch::x86_64::_CMP_NEQ_US,
-    collections::{hash_set, HashMap, HashSet},
-    hash::Hash,
-};
-
 pub fn parse_input(input: &str) -> Vec<Vec<char>> {
     input
         .lines()
@@ -132,7 +126,7 @@ fn print_and_wait(grid: &Vec<Vec<char>>) {
 }
 
 fn find_guard(grid: &Vec<Vec<char>>) -> (usize, usize) {
-    let guards: HashSet<char> = vec!['^', '>', 'v', '<'].into_iter().collect();
+    let guards = vec!['^', '>', 'v', '<'];
     for y in 0..grid.len() {
         for x in 0..grid[y].len() {
             if guards.contains(&grid[y][x]) {
