@@ -44,4 +44,5 @@ fn main() {
     let input = input::read_input("7");
     let parsed_input = day_07::parse_input(&input);
     println!("Answer part 1: {}", day_07::solve_part_1(&parsed_input));
+    println!("Answer part 2: {}", day_07::solve_part_2(&parsed_input));
 }
