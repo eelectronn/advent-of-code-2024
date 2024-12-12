@@ -13,15 +13,23 @@ pub fn parse_input(input: &str) -> Vec<Vec<char>> {
 }
 
 pub fn solve_part_1(input: &Vec<Vec<char>>) -> isize {
-    let (answer, _) = find_path(input);
-    answer
+    let mut visited = vec![vec![' '; input[0].len()]; input.len()];
+    find_path(&mut input.clone(), &mut visited);
+    let mut count = 0;
+    for y in 0..input.len() {
+        for x in 0..input[y].len() {
+            if visited[y][x] != ' ' {
+                count += 1;
+            }
+        }
+    }
+    count
 }
 
-fn find_path(input: &Vec<Vec<char>>) -> (isize, HashMap<(usize, usize), char>) {
-    let mut grid = input.clone();
+fn find_path(grid: &mut Vec<Vec<char>>, visited: &mut Vec<Vec<char>>) -> bool {
     let (mut y, mut x) = find_guard(&grid);
-    let mut visited: HashMap<(usize, usize), char> = HashMap::new();
-    visited.insert((y, x), grid[y][x]);
+    visited[y][x] = grid[y][x];
+    visited[y][x] = grid[y][x];
     loop {
         // Hit the wall
         if (grid[y][x] == '^' && y == 0)
@@ -53,33 +61,64 @@ fn find_path(input: &Vec<Vec<char>>) -> (isize, HashMap<(usize, usize), char>) {
         grid[y][x] = '.';
         y = new_y;
         x = new_x;
-        if let Some(&dir) = visited.get(&(y, x)) {
-            if dir == grid[y][x] {
-                return (-1, visited);
-            }
+        if visited[y][x] == grid[y][x] {
+            return false;
         }
-        visited.insert((y, x), grid[y][x]);
+        visited[y][x] = grid[y][x];
         // print_and_wait(&grid);
     }
-    (visited.len() as isize, visited)
+    true
 }
 
 pub fn solve_part_2(input: &Vec<Vec<char>>) -> usize {
     let (guard_y, gurard_x) = find_guard(&input);
-    let (_, visited) = find_path(input);
     let mut grid = input.clone();
+    let mut visited = vec![vec![' '; input[0].len()]; input.len()];
+    find_path(&mut grid, &mut visited);
+
+    let visited_vec: Vec<(usize, usize)> = visited
+        .iter()
+        .enumerate()
+        .flat_map(|(y, row)| {
+            row.iter()
+                .enumerate()
+                .filter(|(_, &cell)| cell != ' ')
+                .map(move |(x, _)| (y, x))
+        })
+        .collect();
+
+    empty_grid(&mut visited);
+
+    reset_grid(&mut grid, input);
     let mut count = 0;
-    for (y, x) in visited.keys() {
-        if (y, x) != (&guard_y, &gurard_x) {
-            grid[*y][*x] = '#';
-            let (l, _) = find_path(&grid);
-            if l == -1 {
+    for (y, x) in visited_vec {
+        if (y, x) != (guard_y, gurard_x) {
+            grid[y][x] = '#';
+            let found = find_path(&mut grid, &mut visited);
+            if !found {
                 count += 1;
             }
-            grid[*y][*x] = '.';
+            reset_grid(&mut grid, &input);
+            empty_grid(&mut visited);
         }
     }
     count
+}
+
+fn reset_grid(grid: &mut Vec<Vec<char>>, input: &Vec<Vec<char>>) {
+    for y in 0..input.len() {
+        for x in 0..input[y].len() {
+            grid[y][x] = input[y][x];
+        }
+    }
+}
+
+fn empty_grid(grid: &mut Vec<Vec<char>>) {
+    for y in 0..grid.len() {
+        for x in 0..grid[y].len() {
+            grid[y][x] = ' ';
+        }
+    }
 }
 
 fn print_and_wait(grid: &Vec<Vec<char>>) {
