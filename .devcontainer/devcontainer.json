@@ -17,6 +17,7 @@
 			"settings": {
 				"files.autoSave": "afterDelay",
 				"editor.formatOnSave": true,
+				"editor.semanticHighlighting.enabled": false,
 				"terminal.integrated.defaultProfile.linux": "zsh",
 				"terminal.integrated.profiles.linux": {
 					"zsh": {
