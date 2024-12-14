@@ -2,6 +2,14 @@ use std::{collections::HashMap, vec};
 
 use crate::data_structures::DisjointSets;
 
+#[derive(Clone)]
+struct Side {
+    top: bool,
+    bottom: bool,
+    left: bool,
+    right: bool,
+}
+
 pub fn parse_input(input: &str) -> Vec<Vec<char>> {
     input
         .lines()
@@ -90,6 +98,108 @@ pub fn solve_part_1(input: &Vec<Vec<char>>) -> u64 {
     }
     let mut answer = 0;
     for (k, v) in perimeter.iter() {
+        answer += area.get(k).unwrap() * v;
+    }
+    answer
+}
+
+pub fn solve_part_2(input: &Vec<Vec<char>>) -> usize {
+    let disjoin_grid = create_grid_with_disjoint_sets(input);
+    // Padde the grid with -1 cells
+    let mut grid = vec![vec![0; disjoin_grid[0].len() + 2]; disjoin_grid.len() + 2];
+    for y in 0..disjoin_grid.len() {
+        for x in 0..disjoin_grid[y].len() {
+            grid[y + 1][x + 1] = disjoin_grid[y][x];
+        }
+    }
+    let mut area = HashMap::new();
+    let mut number_of_sides = HashMap::new();
+    let mut sides = vec![
+        vec![
+            Side {
+                top: false,
+                bottom: false,
+                left: false,
+                right: false,
+            };
+            grid[0].len()
+        ];
+        grid.len()
+    ];
+    for y in 1..grid.len() - 1 {
+        for x in 1..grid[y].len() - 1 {
+            *area.entry(grid[y][x]).or_insert(0) += 1;
+            let mut side = Side {
+                top: true,
+                bottom: true,
+                left: true,
+                right: true,
+            };
+            let mut side_for_count = Side {
+                top: true,
+                bottom: true,
+                left: true,
+                right: true,
+            };
+            if grid[y - 1][x] == grid[y][x] {
+                side.top = false;
+                side_for_count.top = false;
+                if sides[y - 1][x].left {
+                    side_for_count.left = false;
+                }
+                if sides[y - 1][x].right {
+                    side_for_count.right = false;
+                }
+            }
+            if grid[y + 1][x] == grid[y][x] {
+                side.bottom = false;
+                side_for_count.bottom = false;
+                if sides[y + 1][x].left {
+                    side_for_count.left = false;
+                }
+                if sides[y + 1][x].right {
+                    side_for_count.right = false;
+                }
+            }
+            if grid[y][x - 1] == grid[y][x] {
+                side.left = false;
+                side_for_count.left = false;
+                if sides[y][x - 1].top {
+                    side_for_count.top = false;
+                }
+                if sides[y][x - 1].bottom {
+                    side_for_count.bottom = false;
+                }
+            }
+            if grid[y][x + 1] == grid[y][x] {
+                side.right = false;
+                side_for_count.right = false;
+                if sides[y][x + 1].top {
+                    side_for_count.top = false;
+                }
+                if sides[y][x + 1].bottom {
+                    side_for_count.bottom = false;
+                }
+            }
+
+            sides[y][x] = side;
+
+            if side_for_count.top {
+                *number_of_sides.entry(grid[y][x]).or_insert(0) += 1;
+            }
+            if side_for_count.bottom {
+                *number_of_sides.entry(grid[y][x]).or_insert(0) += 1;
+            }
+            if side_for_count.left {
+                *number_of_sides.entry(grid[y][x]).or_insert(0) += 1;
+            }
+            if side_for_count.right {
+                *number_of_sides.entry(grid[y][x]).or_insert(0) += 1;
+            }
+        }
+    }
+    let mut answer = 0;
+    for (k, v) in number_of_sides.iter() {
         answer += area.get(k).unwrap() * v;
     }
     answer
