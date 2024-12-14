@@ -51,10 +51,36 @@ pub fn solve_part_1(input: &Vec<((i64, i64), (i64, i64))>) -> u64 {
 
 pub fn solve_part_2(input: &Vec<((i64, i64), (i64, i64))>) -> u64 {
     let (_, curr) = solve(input, 0);
-    let now = solve(input, 7916).1;
-    println!("At iteration {}", 7916);
-    print_output(&now);
-    7916
+    for i in 5000..30000 {
+        let now = solve(input, i).1;
+        if exist_filled_block(&now, 5) {
+            println!("At iteration {}", i);
+            print_output(&now);
+        } else {
+            // println!("No blank block found at iteration {}", i);
+        }
+    }
+    0
+}
+
+pub fn exist_filled_block(v: &Vec<Vec<i32>>, block_len: usize) -> bool {
+    for i in 0..v.len() - block_len {
+        for j in 0..v[i].len() - block_len {
+            let mut is_filled = true;
+            for k in 0..block_len {
+                for l in 0..block_len {
+                    if v[i + k][j + l] == 0 {
+                        is_filled = false;
+                        break;
+                    }
+                }
+            }
+            if is_filled {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 fn exist_blank_block(v: &Vec<Vec<i32>>, block_len: usize) -> bool {
