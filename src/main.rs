@@ -21,7 +21,7 @@ mod input;
 fn main() {
     dotenv::dotenv().ok();
 
-    input::get_input("17");
+    // input::get_input("17");
 
     // let input = input::read_input("1");
     // let (first, second) = day_01::parse_input(&input);
@@ -92,4 +92,7 @@ fn main() {
     let input = input::read_input("17");
     let parsed_input = day_17::parse_input(&input);
     println!("Answer part 1: {}", day_17::solve_part_1(&parsed_input));
+    println!("Answer part 2: {}", day_17::solve_part_2(&parsed_input));
+
+    // println!("{:2} {:3} {:6} {:6} {:}", "n", "bin", "^5", "^5^6", "two");
 }
