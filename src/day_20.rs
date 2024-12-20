@@ -16,12 +16,13 @@ pub fn solve_part_1(input: &Vec<Vec<char>>) -> u64 {
     let (end_y, end_x) = find_char(&input, 'E').unwrap();
     let shortest_initial = shortest[end_y][end_x];
     let mut tally = HashMap::new();
+    let mut memo = HashMap::new();
     for y in 0..shortest.len() {
         for x in 0..shortest[y].len() {
             if shortest[y][x] == -1 {
                 continue;
             }
-            let neighbours = find_multi_step_neighbours(&input, (y, x), 2);
+            let neighbours = find_multi_step_neighbours(&input, (y, x), 0, 2, &mut memo);
             for (ny, nx) in neighbours {
                 let new_shortest = shortest_initial - shortest[ny][nx] + shortest[y][x] + 2;
                 if shortest_initial > new_shortest {
@@ -32,6 +33,40 @@ pub fn solve_part_1(input: &Vec<Vec<char>>) -> u64 {
     }
 
     let mut count = 0;
+    for (k, v) in tally {
+        if k >= 100 {
+            count += v;
+        }
+    }
+
+    count
+}
+
+pub fn solve_part_2(input: &Vec<Vec<char>>) -> u64 {
+    let (start_y, start_x) = find_char(&input, 'S').unwrap();
+    let shortest = find_steps(&input, (start_y, start_x));
+    let mut memo = HashMap::new();
+    let mut tally = HashMap::new();
+    for y in 0..shortest.len() {
+        for x in 0..shortest[y].len() {
+            if shortest[y][x] == -1 {
+                continue;
+            }
+            let neighbours = find_multi_step_neighbours(&input, (y, x), 0, 20, &mut memo);
+            for (ny, nx) in neighbours {
+                let saved_steps = shortest[ny][nx]
+                    - shortest[y][x]
+                    - (ny as i32 - y as i32).abs()
+                    - (nx as i32 - x as i32).abs();
+                if saved_steps > 0 {
+                    *tally.entry(saved_steps).or_insert(0) += 1;
+                }
+            }
+        }
+    }
+
+    let mut count = 0;
+
     for (k, v) in tally {
         if k >= 100 {
             count += v;
@@ -82,40 +117,52 @@ fn find_char(input: &Vec<Vec<char>>, c: char) -> Option<(usize, usize)> {
 fn find_multi_step_neighbours(
     grid: &Vec<Vec<char>>,
     curr: (usize, usize),
+    curr_step: usize,
     steps: usize,
+    memo: &mut HashMap<(usize, usize, usize), Vec<(usize, usize)>>,
 ) -> Vec<(usize, usize)> {
-    let mut neighbours = HashSet::new();
-    if steps == 0 {
-        return vec![(curr.0, curr.1)];
+    if curr_step > steps {
+        return vec![];
+    }
+    if let Some(neighbours) = memo.get(&(curr.0, curr.1, steps - curr_step)) {
+        return neighbours.clone();
     }
     let (y, x) = curr;
+    let mut neighbours = HashSet::new();
+    if grid[y][x] != '#' {
+        neighbours.insert((y, x));
+    }
     if x > 0 {
-        for n in find_multi_step_neighbours(grid, (y, x - 1), steps - 1) {
+        for n in find_multi_step_neighbours(grid, (y, x - 1), curr_step + 1, steps, memo) {
             if grid[n.0][n.1] != '#' {
                 neighbours.insert(n);
             }
         }
     }
     if x < grid[0].len() - 1 {
-        for n in find_multi_step_neighbours(grid, (y, x + 1), steps - 1) {
+        for n in find_multi_step_neighbours(grid, (y, x + 1), curr_step + 1, steps, memo) {
             if grid[n.0][n.1] != '#' {
                 neighbours.insert(n);
             }
         }
     }
     if y > 0 {
-        for n in find_multi_step_neighbours(grid, (y - 1, x), steps - 1) {
+        for n in find_multi_step_neighbours(grid, (y - 1, x), curr_step + 1, steps, memo) {
             if grid[n.0][n.1] != '#' {
                 neighbours.insert(n);
             }
         }
     }
     if y < grid.len() - 1 {
-        for n in find_multi_step_neighbours(grid, (y + 1, x), steps - 1) {
+        for n in find_multi_step_neighbours(grid, (y + 1, x), curr_step + 1, steps, memo) {
             if grid[n.0][n.1] != '#' {
                 neighbours.insert(n);
             }
         }
     }
+    memo.insert(
+        (curr.0, curr.1, steps - curr_step),
+        neighbours.clone().into_iter().collect(),
+    );
     neighbours.into_iter().collect()
 }
