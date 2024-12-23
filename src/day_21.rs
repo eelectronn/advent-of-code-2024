@@ -5,6 +5,14 @@ pub fn parse_input(input: &str) -> Vec<&str> {
 }
 
 pub fn solve_part_1(input: &Vec<&str>) -> usize {
+    solve(input, 3)
+}
+
+pub fn solve_part_2(input: &Vec<&str>) -> usize {
+    solve(input, 26)
+}
+
+pub fn solve(input: &Vec<&str>, iterations: usize) -> usize {
     let numpad_map: HashMap<char, (usize, usize)> = HashMap::from_iter([
         ('7', (0, 0)),
         ('8', (0, 1)),
@@ -29,6 +37,7 @@ pub fn solve_part_1(input: &Vec<&str>) -> usize {
     ]);
     let numpad_paths = find_pairwise_paths(&numpad_map);
     let dirpad_paths = find_pairwise_paths(&dirpad_map);
+    let mut memo = HashMap::new();
 
     let mut answer = 0;
     for q in input {
@@ -38,7 +47,15 @@ pub fn solve_part_1(input: &Vec<&str>) -> usize {
             .collect::<String>()
             .parse::<usize>()
             .unwrap();
-        answer += num * forward(&numpad_paths, &dirpad_paths, q.to_string(), 3, true).len();
+        answer += num
+            * forward(
+                &numpad_paths,
+                &dirpad_paths,
+                q.to_string(),
+                iterations,
+                true,
+                &mut memo,
+            );
     }
 
     answer
@@ -50,9 +67,10 @@ fn forward(
     seq: String,
     steps: usize,
     use_numpad: bool,
-) -> String {
+    memo: &mut HashMap<(String, usize), usize>,
+) -> usize {
     if steps == 0 {
-        return seq;
+        return seq.len();
     }
     let mut unique_chars = Vec::new();
     let mut char_freq = HashMap::new();
@@ -66,44 +84,54 @@ fn forward(
         }
     }
     let mut curr = 'A';
-    let mut buttons_with_unique = Vec::new();
     let paths = if use_numpad {
         numpad_paths
     } else {
         dirpad_paths
     };
-    for k in &unique_chars {
-        let mut l = MAX;
-        let mut answer = "".to_string();
-        for path in paths.get(&(curr, *k)).unwrap() {
-            let (dir_1, dir_2, dir_1_steps, dir_2_steps) = path;
-            let potential_answer = forward(
-                numpad_paths,
-                dirpad_paths,
-                format!(
-                    "{}{}A",
-                    vec![dir_1; *dir_1_steps].into_iter().collect::<String>(),
-                    vec![dir_2; *dir_2_steps].into_iter().collect::<String>()
-                ),
-                steps - 1,
-                false,
-            );
-            if potential_answer.len() < l {
-                l = potential_answer.len();
-                answer = potential_answer;
+    let mut butons_seq_len_with_unique =
+        if memo.contains_key(&(unique_chars.iter().collect::<String>(), steps)) {
+            *memo
+                .get(&(unique_chars.iter().collect::<String>(), steps))
+                .unwrap()
+        } else {
+            let mut butons_seq_len_with_unique = 0;
+            for k in &unique_chars {
+                let mut l = MAX;
+                // let mut answer = "".to_string();
+                for path in paths.get(&(curr, *k)).unwrap() {
+                    let (dir_1, dir_2, dir_1_steps, dir_2_steps) = path;
+                    let potential_answer = forward(
+                        numpad_paths,
+                        dirpad_paths,
+                        format!(
+                            "{}{}A",
+                            vec![dir_1; *dir_1_steps].into_iter().collect::<String>(),
+                            vec![dir_2; *dir_2_steps].into_iter().collect::<String>()
+                        ),
+                        steps - 1,
+                        false,
+                        memo,
+                    );
+                    if potential_answer < l {
+                        l = potential_answer
+                    }
+                }
+                butons_seq_len_with_unique += l;
+                curr = *k;
             }
-        }
-        buttons_with_unique.push(answer);
-        curr = *k;
-    }
-    let mut full_answer = Vec::new();
+            memo.insert(
+                (unique_chars.iter().collect::<String>(), steps),
+                butons_seq_len_with_unique,
+            );
+            butons_seq_len_with_unique
+        };
     for i in 0..unique_chars.len() {
-        full_answer.push(buttons_with_unique[i].clone());
         let freq = char_freq.get(&unique_chars[i]).unwrap();
-        full_answer.push(vec!['A'; *freq - 1].into_iter().collect::<String>());
+        butons_seq_len_with_unique += freq - 1;
     }
 
-    full_answer.into_iter().collect::<String>()
+    butons_seq_len_with_unique
 }
 
 fn find_pairwise_paths(
