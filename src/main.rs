@@ -115,5 +115,5 @@ fn main() {
     let input = input::read_input("22");
     let parsed_input = day_22::parse_input(&input);
     println!("Answer part 1: {}", day_22::solve_part_1(&parsed_input));
-    // println!("Answer part 2: {}", day_22::solve_part_2(&parsed_input));
+    println!("Answer part 2: {}", day_22::solve_part_2(&parsed_input));
 }
