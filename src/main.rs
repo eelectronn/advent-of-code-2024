@@ -22,11 +22,12 @@ mod day_20;
 mod day_21;
 mod day_22;
 mod day_23;
+mod day_24;
 mod input;
 
 fn main() {
     dotenv::dotenv().ok();
-    // input::get_input("23");
+    // input::get_input("24");
 
     // let input = input::read_input("1");
     // let (first, second) = day_01::parse_input(&input);
@@ -116,9 +117,13 @@ fn main() {
     // let parsed_input = day_22::parse_input(&input);
     // println!("Answer part 1: {}", day_22::solve_part_1(&parsed_input));
     // println!("Answer part 2: {}", day_22::solve_part_2(&parsed_input));
+    // let input = input::read_input("23");
+    // let parsed_input = day_23::parse_input(&input);
+    // println!("Answer part 1: {}", day_23::solve_part_1(&parsed_input));
+    // println!("Answer part 2: {}", day_23::solve_part_2(&parsed_input));
 
-    let input = input::read_input("23");
-    let parsed_input = day_23::parse_input(&input);
-    println!("Answer part 1: {}", day_23::solve_part_1(&parsed_input));
-    println!("Answer part 2: {}", day_23::solve_part_2(&parsed_input));
+    let input = input::read_input("24");
+    let parsed_input = day_24::parse_input(&input);
+    // println!("Answer part 1: {}", day_24::solve_part_1(&parsed_input));
+    println!("Answer part 2: {}", day_24::solve_part_2(&parsed_input));
 }
